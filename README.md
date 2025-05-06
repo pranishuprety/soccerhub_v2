@@ -1,0 +1,1 @@
+This README is a placeholder. Detailed setup instructions, features, and deployment notes will be added soon.

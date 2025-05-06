@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soccer Hub Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar" style="position: relative;">
+    <button id="profileBtn" class="btn primary" style="display: none; position: absolute; top: 10px; left: 10px;">Profile</button>
+    <h1 class="site-title">Soccer Hub: Your Sports Home</h1>
+    <div class="header-actions">
+      <button id="logoutBtn" class="btn secondary" style="position: absolute; top: 10px; right: 10px; display: none;">Logout</button>
+      <button id="themeToggle" class="btn ghost" aria-label="Toggle dark/light mode">🌞/🌙</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Standings Section -->
+    <section class="standings-grid">
+      <div class="league-section">
+        <h2>Premier League Standings</h2>
+        <div id="epl-standings" class="standings-list"><p>Loading...</p></div>
+      </div>
+      <div class="league-section">
+        <h2>La Liga Standings</h2>
+        <div id="laliga-standings" class="standings-list"><p>Loading...</p></div>
+      </div>
+      <div class="league-section">
+        <h2>Champions League Standings</h2>
+        <div id="ucl-standings" class="standings-list"><p>Loading...</p></div>
+      </div>
+    </section>
+
+    <!-- Upcoming Matches -->
+    <section class="matches-grid">
+      <div class="matches-section">
+        <h2>Upcoming Weekly Matches</h2>
+        <div id="weekly-matches" class="matches-list"><p>Loading upcoming matches...</p></div>
+      </div>
+      <div class="matches-section">
+        <h2>Past Week Scores</h2>
+        <div id="past-week-epl" class="matches-list"><p>Loading...</p></div>
+        <div id="past-week-laliga" class="matches-list"><p>Loading...</p></div>
+      </div>
+      <div class="matches-section">
+        <h2>Live Scores</h2>
+        <div id="live-score" class="matches-list"><p>Loading...</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© 2025 Pranish Uprety</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
