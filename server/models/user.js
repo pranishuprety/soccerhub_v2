@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const bcrypt    = require('bcryptjs');   // works fine in CommonJS land
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -19,24 +19,27 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 6
+  },
+
+  // NEW ────────────────────────────────────────────────
+  //  Stores the team IDs (or names) the user follows.
+  favorites: {
+    type: [String],
+    default: []
   }
 });
 
-// Hash password before saving
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) {
-    return next();
-  }
+// hash password on create / when modified
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
-// Method to compare passwords
-userSchema.methods.matchPassword = async function(enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+// compare incoming login pw to hash
+userSchema.methods.matchPassword = function (plainPw) {
+  return bcrypt.compare(plainPw, this.password);
 };
 
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);

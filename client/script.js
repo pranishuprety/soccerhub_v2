@@ -1,52 +1,51 @@
-// SoccerHub Main Script: Football API Proxy + Auth + Theme Toggle
-
-// ----- API Base URLs -----
-const AUTH_API_BASE = 'http://localhost:5000/api/auth';
+//  API Base URLs 
+const AUTH_API_BASE    = 'http://localhost:5000/api/auth';
 const FOOTBALL_API_BASE = 'http://localhost:5000/api/football';
 
-// ----- DOM Elements -----
-// Football containers
-const eplContainer       = document.getElementById('epl-standings');
-const laligaContainer    = document.getElementById('laliga-standings');
-const uclContainer       = document.getElementById('ucl-standings');
-const weeklyMatchesCont  = document.getElementById('weekly-matches');
-const pastWeekEPLCont    = document.getElementById('past-week-epl');
-const pastWeekLaLigaCont = document.getElementById('past-week-laliga');
-const liveScoreCont      = document.getElementById('live-score');
+//  DOM Elements 
+const eplContainer        = document.getElementById('epl-standings');
+const laligaContainer     = document.getElementById('laliga-standings');
+const uclContainer        = document.getElementById('ucl-standings');
+const weeklyMatchesCont   = document.getElementById('weekly-matches');
+const pastWeekEPLCont     = document.getElementById('past-week-epl');
+const pastWeekLaLigaCont  = document.getElementById('past-week-laliga');
+const liveScoreCont       = document.getElementById('live-score');
 
-// Auth forms/buttons
-const loginForm          = document.getElementById('loginForm');
-const registerForm       = document.getElementById('registerForm');
-const resetForm          = document.getElementById('resetPasswordForm');
-const logoutBtn          = document.getElementById('logoutBtn');
+const loginForm           = document.getElementById('loginForm');
+const registerForm        = document.getElementById('registerForm');
+const resetForm           = document.getElementById('resetPasswordForm');
+const logoutBtn           = document.getElementById('logoutBtn');
+const themeToggleBtn      = document.getElementById('themeToggle');
 
-// Theme toggle
-const themeToggleBtn     = document.getElementById('themeToggle');
+//  Auth Helpers 
+function storeToken(token)     { localStorage.setItem('token', token); }
+function getToken()            { return localStorage.getItem('token'); }
+function removeToken()         { localStorage.removeItem('token'); }
+function redirectTo(page)      { window.location.href = page; }
 
-// ----- Initialization -----
+//  Initialization 
 document.addEventListener('DOMContentLoaded', () => {
-  // Theme toggle setup
+  // Theme toggle
   if (themeToggleBtn) {
     themeToggleBtn.addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
       localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
     });
   }
-  // Apply saved theme
   if (localStorage.getItem('theme') === 'dark') {
     document.body.classList.add('dark-mode');
   }
 
-  // Load football data if on dashboard
-  if (eplContainer)       fetchStandings('epl', eplContainer);
-  if (laligaContainer)    fetchStandings('laliga', laligaContainer);
-  if (uclContainer)       fetchStandings('ucl', uclContainer);
-  if (weeklyMatchesCont)  fetchWeeklyMatches();
-  if (pastWeekEPLCont)    fetchPastWeekScores('epl', pastWeekEPLCont);
-  if (pastWeekLaLigaCont) fetchPastWeekScores('laliga', pastWeekLaLigaCont);
-  if (liveScoreCont)      fetchLiveScores();
+  // Load football data on dashboard
+  if (eplContainer)        fetchStandings('epl', eplContainer);
+  if (laligaContainer)     fetchStandings('laliga', laligaContainer);
+  if (uclContainer)        fetchStandings('ucl', uclContainer);
+  if (weeklyMatchesCont)   fetchWeeklyMatches();
+  if (pastWeekEPLCont)     fetchPastWeekScores('epl', pastWeekEPLCont);
+  if (pastWeekLaLigaCont)  fetchPastWeekScores('laliga', pastWeekLaLigaCont);
+  if (liveScoreCont)       fetchLiveScores();
 
-  // Setup auth based on current page
+  // Setup auth flows
   const path = window.location.pathname;
   if (path.includes('dashboard.html')) {
     protectDashboard();
@@ -59,18 +58,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ----- Football Proxy Functions -----
+// Football Proxy Functions 
 async function fetchStandings(league, container) {
   try {
-    const res = await fetch(`${FOOTBALL_API_BASE}/standings/${league}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const res = await fetch(`${FOOTBALL_API_BASE}/standings/${league}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getToken()}`
+      }
+    });
+    if (!res.ok) {
+      if (res.status === 401) throw new Error('Unauthorized');
+      throw new Error(`HTTP ${res.status}`);
+    }
     const json = await res.json();
     displayStandings(json.response[0].league.standings[0], container);
   } catch (err) {
     console.error('Standings Error:', err);
+    if (err.message === 'Unauthorized') {
+      removeToken();
+      return redirectTo('login.html');
+    }
     if (container) container.innerHTML = '<p>Error loading standings.</p>';
   }
 }
+
 function displayStandings(data, container) {
   if (!container) return;
   container.innerHTML = '';
@@ -92,15 +104,25 @@ function displayStandings(data, container) {
 async function fetchWeeklyMatches() {
   if (!weeklyMatchesCont) return;
   try {
-    const res = await fetch(`${FOOTBALL_API_BASE}/fixtures/weekly`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const res = await fetch(`${FOOTBALL_API_BASE}/fixtures/weekly`, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    });
+    if (!res.ok) {
+      if (res.status === 401) throw new Error('Unauthorized');
+      throw new Error(`HTTP ${res.status}`);
+    }
     const json = await res.json();
     displayMatches(json.response.slice(0, 10));
   } catch (err) {
     console.error('Weekly Matches Error:', err);
+    if (err.message === 'Unauthorized') {
+      removeToken();
+      return redirectTo('login.html');
+    }
     weeklyMatchesCont.innerHTML = '<p>Error loading matches.</p>';
   }
 }
+
 function displayMatches(matches) {
   if (!weeklyMatchesCont) return;
   weeklyMatchesCont.innerHTML = '';
@@ -119,15 +141,25 @@ function displayMatches(matches) {
 async function fetchPastWeekScores(league, container) {
   if (!container) return;
   try {
-    const res = await fetch(`${FOOTBALL_API_BASE}/fixtures/past/${league}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const res = await fetch(`${FOOTBALL_API_BASE}/fixtures/past/${league}`, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    });
+    if (!res.ok) {
+      if (res.status === 401) throw new Error('Unauthorized');
+      throw new Error(`HTTP ${res.status}`);
+    }
     const json = await res.json();
     displayPastWeekScores(json.response, container);
   } catch (err) {
     console.error('Past Week Error:', err);
+    if (err.message === 'Unauthorized') {
+      removeToken();
+      return redirectTo('login.html');
+    }
     container.innerHTML = '<p>Error loading past week scores.</p>';
   }
 }
+
 function displayPastWeekScores(matches, container) {
   if (!container) return;
   container.innerHTML = '';
@@ -150,15 +182,25 @@ function displayPastWeekScores(matches, container) {
 async function fetchLiveScores() {
   if (!liveScoreCont) return;
   try {
-    const res = await fetch(`${FOOTBALL_API_BASE}/fixtures/live`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const res = await fetch(`${FOOTBALL_API_BASE}/fixtures/live`, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    });
+    if (!res.ok) {
+      if (res.status === 401) throw new Error('Unauthorized');
+      throw new Error(`HTTP ${res.status}`);
+    }
     const json = await res.json();
     displayLiveScores(json.response);
   } catch (err) {
     console.error('Live Scores Error:', err);
+    if (err.message === 'Unauthorized') {
+      removeToken();
+      return redirectTo('login.html');
+    }
     liveScoreCont.innerHTML = '<p>Error loading live scores.</p>';
   }
 }
+
 function displayLiveScores(matches) {
   if (!liveScoreCont) return;
   liveScoreCont.innerHTML = '';
@@ -178,7 +220,7 @@ function displayLiveScores(matches) {
   });
 }
 
-// ----- Authentication Functions -----
+//  Authentication Functions 
 async function handleAuthResponse(res) {
   const data = await res.json();
   if (!res.ok) {
@@ -187,10 +229,6 @@ async function handleAuthResponse(res) {
   }
   return data;
 }
-function storeToken(token) { localStorage.setItem('token', token); }
-function getToken() { return localStorage.getItem('token'); }
-function removeToken() { localStorage.removeItem('token'); }
-function redirectTo(page) { window.location.href = page; }
 
 function setupLoginForm() {
   if (!loginForm) return;
@@ -246,22 +284,18 @@ function setupResetForm() {
 }
 
 function protectDashboard() {
-    // Show logout button when authenticated
-    if (logoutBtn) {
-      logoutBtn.style.display = 'inline-block';
-      logoutBtn.addEventListener('click', () => {
-        removeToken();
-        redirectTo('login.html');
-      });
-    }
-  
-    const token = getToken();
-    if (!token) return redirectTo('login.html');
-  
-    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-    if (!userInfo.username) {
+  if (logoutBtn) {
+    logoutBtn.style.display = 'inline-block';
+    logoutBtn.addEventListener('click', () => {
       removeToken();
-      return redirectTo('login.html');
-    }
+      redirectTo('login.html');
+    });
   }
-  
+  const token = getToken();
+  if (!token) return redirectTo('login.html');
+  const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+  if (!userInfo.username) {
+    removeToken();
+    return redirectTo('login.html');
+  }
+}

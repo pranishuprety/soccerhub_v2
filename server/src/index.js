@@ -1,12 +1,15 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config({
+  path: path.resolve(__dirname, '../.env')
+});
 const mongoose = require('mongoose');
 
 // Route handlers
 const authRoutes = require('./routes/auth');
 const footballRoutes = require('./routes/football');
+const protect = require('./middleware/auth');
 
 const app = express();
 
@@ -15,16 +18,13 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error('MongoDB connection error:', err));
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Mount API routes BEFORE static middleware
 app.use('/api/auth', authRoutes);
-app.use('/api/football', footballRoutes);
+app.use('/api/football', protect, footballRoutes);
 
 // Serve static client files
 app.use(express.static(path.join(__dirname, '../../client')));
