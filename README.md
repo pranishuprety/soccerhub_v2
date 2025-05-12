@@ -6,6 +6,9 @@ Soccer Hub is a full‑stack web application that provides soccer fans with up�
 
 This project satisfies the requirements for the CS 355 Full‑Stack Development final: implementing secure user authentication, a RESTful API with protected routes, CRUD operations for user data, and a dynamic front‑end interface.
 
+## Live Demo
+Try it out live: https://soccerhub-v2.onrender.com/register.html
+
 ## Features
 - **Authentication**: Secure signup/login with bcrypt and JWT  
 - **Favorites CRUD**: Create, read, update, delete your favorite team  
