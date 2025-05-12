@@ -1,6 +1,6 @@
 //  API Base URLs 
-const AUTH_API_BASE    = 'http://localhost:5000/api/auth';
-const FOOTBALL_API_BASE = 'http://localhost:5000/api/football';
+const AUTH_API_BASE    = 'api/auth';
+const FOOTBALL_API_BASE = 'api/football';
 
 //  DOM Elements 
 const eplContainer        = document.getElementById('epl-standings');
