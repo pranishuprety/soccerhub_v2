@@ -21,7 +21,6 @@ const userSchema = new mongoose.Schema({
     minlength: 6
   },
 
-  // NEW ────────────────────────────────────────────────
   //  Stores the team IDs (or names) the user follows.
   favorites: {
     type: [String],

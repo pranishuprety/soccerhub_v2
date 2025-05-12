@@ -3,9 +3,8 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../../models/user');  // ← fixed path: one level up into server/models
+const User = require('../../models/user');
 
-// Generate JWT
 const generateToken = (user) => {
   return jwt.sign(
     { id: user._id, username: user.username },
@@ -14,23 +13,17 @@ const generateToken = (user) => {
   );
 };
 
-// @route   POST /api/auth/register
-// @desc    Register new user
-// @access  Public
 router.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    // Check if user already exists
     const userExists = await User.findOne({ $or: [{ email }, { username }] });
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Create new user (password hashed via schema hook)
     const user = await User.create({ username, email, password });
 
-    // Respond with user data + token
     res.status(201).json({
       _id: user._id,
       username: user.username,
@@ -44,14 +37,10 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// @route   POST /api/auth/login
-// @desc    Authenticate user & return token
-// @access  Public
 router.post('/login', async (req, res) => {
-  const { identifier, password } = req.body;  // identifier = email or username
+  const { identifier, password } = req.body;
 
   try {
-    // Find by email or username
     const user = await User.findOne({
       $or: [{ email: identifier }, { username: identifier }]
     });
@@ -73,9 +62,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// @route   POST /api/auth/reset-password
-// @desc    Reset user password
-// @access  Public (for demo—consider adding email verification in production)
 router.post('/reset-password', async (req, res) => {
   const { email, newPassword } = req.body;
 
@@ -85,7 +71,6 @@ router.post('/reset-password', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Update and re-hash password via your model’s pre-save hook
     user.password = newPassword;
     await user.save();
 
