@@ -16,6 +16,9 @@ This project satisfies the requirements for the CS 355 Full‑Stack Developmen
 - **Backend**: Node.js, Express, MongoDB (Mongoose)  
 - **Frontend**: HTML5, CSS3, Vanilla JavaScript  
 
+## Demo Video
+https://youtu.be/vyD2LjQL0pc
+
 ## Quick Start
 1. **Clone & Install**  
    ```bash
