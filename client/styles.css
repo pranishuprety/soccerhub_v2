@@ -64,6 +64,15 @@ header h1 {
   gap: 0.75rem;
 }
 
+#favoriteLogo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 50%;
+  display: none;       /* hidden until a team is chosen */
+}
+
+
 #usernameDisplay {
   font-weight: bold;
 }
@@ -152,9 +161,9 @@ section h4 {
 }
 
 .team-card p,
-.match-card
+.match-card {
   background-color: #121212;
-  color: #e0e7ff; #555;
+  color: #e0e7ff;
 }
 
 /* Scrollable Sections */
@@ -250,6 +259,80 @@ body.dark-mode .theme-toggle:hover {
   background-color: #e04444;
 }
 
+/* ——— Auth Pages ——— */
+.auth-container {
+  max-width: 400px;
+  margin: 4rem auto;
+  background: #1f1f1f;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  color: #e0e7ff;
+}
+
+.auth-container h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  color: #ffffff;
+}
+
+.auth-container .form-group {
+  margin-bottom: 1rem;
+}
+
+.auth-container label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.auth-container input[type="text"],
+.auth-container input[type="password"],
+.auth-container input[type="email"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #333;
+  border-radius: 0.25rem;
+  background: #2b2b2b;
+  color: #eeeeee;
+  font-size: 1rem;
+}
+
+.auth-container .button,
+.auth-container button {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  background: #1e90ff;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.auth-container .button:hover,
+.auth-container button:hover {
+  background: #1c86ee;
+}
+
+.auth-container p {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.auth-container a {
+  color: #1e90ff;
+  text-decoration: none;
+}
+
+.auth-container a:hover {
+  text-decoration: underline;
+}
+
+
 /* Responsive Design */
 @media (max-width: 768px) {
   header h1 {
@@ -270,3 +353,4 @@ body.dark-mode .theme-toggle:hover {
       font-size: 0.9rem;
   }
 }
+

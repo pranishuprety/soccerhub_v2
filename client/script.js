@@ -321,3 +321,47 @@ function protectDashboard() {
     localStorage.setItem('favoriteTeam', e.target.value);
   });
 })();
+
+
+(function setupProfileNav() {
+  const usernameEl = document.getElementById('usernameDisplay');
+  const favSelect  = document.getElementById('favoriteTeam');
+  const logoEl     = document.getElementById('favoriteLogo');
+
+  // map team names to your logo file paths
+  const teamLogos = {
+    'Liverpool':       'assets/liverpool.png',
+    'Manchester City': 'assets/manchester.png',
+    'Real Madrid':     'assets/madrid.png',
+    'Barcelona':       'assets/barcelona.png',
+    'PSG':             'assets/paris.png'
+  };
+
+  // show username
+  const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+  if (userInfo.username) {
+    usernameEl.textContent = `👤 ${userInfo.username}`;
+  }
+
+  // load & display saved favorite
+  const saved = localStorage.getItem('favoriteTeam');
+  if (saved) {
+    favSelect.value = saved;
+    if (teamLogos[saved]) {
+      logoEl.src = teamLogos[saved];
+      logoEl.style.display = 'inline-block';
+    }
+  }
+
+  // when they pick a team, save & show its logo
+  favSelect.addEventListener('change', e => {
+    const team = e.target.value;
+    localStorage.setItem('favoriteTeam', team);
+    if (teamLogos[team]) {
+      logoEl.src = teamLogos[team];
+      logoEl.style.display = 'inline-block';
+    } else {
+      logoEl.style.display = 'none';
+    }
+  });
+})();
