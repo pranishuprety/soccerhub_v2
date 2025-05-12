@@ -41,6 +41,52 @@ header h1 {
   transform: scale(1.05);
 }
 
+/* Navbar Styling */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: #1e3a8a;
+  color: white;
+  position: relative;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+#usernameDisplay {
+  font-weight: bold;
+}
+
+#favoriteTeam {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+#favoriteTeam option {
+  background: white;
+  color: black;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 /* Main Sections */
 main {
   padding: 2rem;
@@ -71,8 +117,6 @@ section h4 {
   margin-bottom: 1rem;
   color: #1e3c72;
 }
-
-
 
 /* Cards Styling */
 .team-card,
@@ -108,9 +152,9 @@ section h4 {
 }
 
 .team-card p,
-.match-card p {
-  font-size: 1rem;
-  color: #555;
+.match-card
+  background-color: #121212;
+  color: #e0e7ff; #555;
 }
 
 /* Scrollable Sections */
@@ -186,6 +230,7 @@ body.dark-mode .theme-toggle {
 body.dark-mode .theme-toggle:hover {
   background-color: rgba(224, 231, 255, 0.2);
 }
+
 /* Style & position the Logout button */
 #logoutBtn {
   position: absolute;
@@ -204,8 +249,6 @@ body.dark-mode .theme-toggle:hover {
 #logoutBtn:hover {
   background-color: #e04444;
 }
-
-
 
 /* Responsive Design */
 @media (max-width: 768px) {

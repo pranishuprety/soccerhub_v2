@@ -299,3 +299,25 @@ function protectDashboard() {
     return redirectTo('login.html');
   }
 }
+
+// Profile dropdown logic
+(function setupProfileNav() {
+  const usernameEl = document.getElementById('usernameDisplay');
+  const favSelect  = document.getElementById('favoriteTeam');
+
+
+  const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+  if (userInfo.username) {
+    usernameEl.textContent = `👤 ${userInfo.username}`;
+  }
+
+
+  const saved = localStorage.getItem('favoriteTeam');
+  if (saved) {
+    favSelect.value = saved;
+  }
+
+  favSelect.addEventListener('change', e => {
+    localStorage.setItem('favoriteTeam', e.target.value);
+  });
+})();

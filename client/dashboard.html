@@ -9,11 +9,26 @@
 </head>
 <body>
   <!-- Navbar -->
-  <header class="navbar" style="position: relative;">
-    <button id="profileBtn" class="btn primary" style="display: none; position: absolute; top: 10px; left: 10px;">Profile</button>
-    <h1 class="site-title">Soccer Hub: Your Sports Home</h1>
+  <header class="navbar">
+    <div class="navbar-left">
+      <button id="profileBtn" class="btn primary" style="display: none;">Profile</button>
+      <h1 class="site-title">Soccer Hub: Your Sports Home</h1>
+    </div>
+
+    <div class="profile-nav">
+      <span id="usernameDisplay">👤 Guest</span>
+      <select id="favoriteTeam">
+        <option value="" disabled selected>★ Favorite Team</option>
+        <option value="Liverpool">Liverpool</option>
+        <option value="Manchester City">Manchester City</option>
+        <option value="Real Madrid">Real Madrid</option>
+        <option value="Barcelona">Barcelona</option>
+        <option value="PSG">PSG</option>
+      </select>
+    </div>
+
     <div class="header-actions">
-      <button id="logoutBtn" class="btn secondary" style="position: absolute; top: 10px; right: 10px; display: none;">Logout</button>
+      <button id="logoutBtn" class="btn secondary" style="display: none;">Logout</button>
       <button id="themeToggle" class="btn ghost" aria-label="Toggle dark/light mode">🌞/🌙</button>
     </div>
   </header>
@@ -53,7 +68,7 @@
     </section>
   </main>
 
-  <footer class="footer">
+  <footer class="footer"></footer>
     <p>© 2025 Pranish Uprety</p>
   </footer>
 
