@@ -26,3 +26,7 @@ https://youtu.be/vyD2LjQL0pc
    cd soccerhub_v2/server
    npm install
 
+2. Configure your environment by creating a server/.env with MONGO_URI and JWT_SECRET
+3. Run  the API: npm start
+4. client/dashboard.html
+
