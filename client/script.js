@@ -301,26 +301,52 @@ function protectDashboard() {
 }
 
 // Profile dropdown logic
-(function setupProfileNav() {
+(async function setupProfileNav() {
   const usernameEl = document.getElementById('usernameDisplay');
   const favSelect  = document.getElementById('favoriteTeam');
+  const logoEl     = document.getElementById('favoriteLogo');
+  const token      = getToken();
 
-
+  // show username
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-  if (userInfo.username) {
-    usernameEl.textContent = `👤 ${userInfo.username}`;
+  usernameEl.textContent = `👤 ${userInfo.username || 'Guest'}`;
+
+  // fetch existing favorite from server
+  try {
+    const res = await fetch('/api/favorites', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const fav = await res.json();
+    if (fav.team) {
+      favSelect.value = fav.team;
+      logoEl.src = teamLogos[fav.team];
+      logoEl.style.display = 'inline-block';
+    }
+  } catch (err) {
+    console.error('Fav load error', err);
   }
 
-
-  const saved = localStorage.getItem('favoriteTeam');
-  if (saved) {
-    favSelect.value = saved;
-  }
-
-  favSelect.addEventListener('change', e => {
-    localStorage.setItem('favoriteTeam', e.target.value);
+  // on change, persist to server
+  favSelect.addEventListener('change', async e => {
+    const team = e.target.value;
+    try {
+      await fetch('/api/favorites', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ team })
+      });
+      // then show logo
+      logoEl.src = teamLogos[team];
+      logoEl.style.display = 'inline-block';
+    } catch (err) {
+      console.error('Fav save error', err);
+    }
   });
 })();
+
 
 
 (function setupProfileNav() {

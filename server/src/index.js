@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 // Route handlers
 const authRoutes = require('./routes/auth');
 const footballRoutes = require('./routes/football');
+const favoritesRoutes = require('./routes/favorites'); // Added
 const protect = require('./middleware/auth');
 
 const app = express();
@@ -25,6 +26,7 @@ mongoose.connect(process.env.MONGO_URI)
 // Mount API routes BEFORE static middleware
 app.use('/api/auth', authRoutes);
 app.use('/api/football', protect, footballRoutes);
+app.use('/api/favorites', protect, favoritesRoutes); // Added
 
 // Serve static client files
 app.use(express.static(path.join(__dirname, '../../client')));
