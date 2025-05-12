@@ -28,5 +28,5 @@ https://youtu.be/vyD2LjQL0pc
 
 2. Configure your environment by creating a server/.env with MONGO_URI and JWT_SECRET
 3. Run  the API: npm start
-4. client/dashboard.html
+4. Open client/dashboard.html in your browser to start using Soccer Hub.
 
